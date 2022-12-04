@@ -1,6 +1,7 @@
 # intify
 # sort by start time
 import os, json
+from tqdm import tqdm
 
 def read_file(full_path):
     with open(full_path, 'r') as f:
@@ -17,7 +18,7 @@ def int_and_sorted_notes(notes):
         for key,val in note.items():
             note[key] = float(val)
         cleaned_notes.append(note)
-    cleaned_notes = sorted(cleaned_notes, key = lambda x: x['start_time'])
+    cleaned_notes = sorted(cleaned_notes, key = lambda x: (x['start_time'], x.get('instrument',-1)))
     return cleaned_notes
 
 def clean_json(transcribed_json):
@@ -26,11 +27,13 @@ def clean_json(transcribed_json):
     transcribed_json['notes'] = cleaned_notes
     return transcribed_json
 
-source_path = r'mini_dataset\wav_output'
+source_path = r'dataset\wav_output'
+# source_path = r'dataset\query_output'
+
 input_path = os.path.join(source_path, 'raw')
 output_path = os.path.join(source_path, 'cleaned')
 
-for file_name in os.listdir(input_path):
+for file_name in tqdm(os.listdir(input_path)):
     out_file_path = os.path.join(output_path, file_name)
     in_file_path = os.path.join(input_path, file_name)
 
